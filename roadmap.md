@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Apply supplied glass/slab design: awaiting choice between restyling GEMSTON and replacing the home page with Strata AI
+- [ ] Verify chosen design on desktop/mobile, menu and reduced motion
+
 - [x] Public invite/share/post links use @Gemystabot; webhook passes the current Telegram user's id into personal invite buttons
 - [x] Verify bot referral-link correction: 28 tests passed and copied invite opens @Gemystabot; publish requested after saving
 
