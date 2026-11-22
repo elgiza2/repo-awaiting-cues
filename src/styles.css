@@ -144,6 +144,11 @@
     border-color: var(--color-border);
   }
 
+  html {
+    /* Compact scale: every rem-based size shrinks together. */
+    font-size: 87.5%;
+  }
+
   html,
   body {
     background-color: var(--color-background);

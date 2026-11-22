@@ -8,3 +8,4 @@
 - [ ] Server-side accounts: save progress, real referral counting, verify task membership, fee payments and withdrawals (needs backend)
 - [ ] Bot: start message, daily notifications, gifts, channel posts, admin panel at /101
 - [ ] Set the bot's Main Mini App in BotFather so invite links open the app (user action)
+- [x] Shrink UI element sizes across pages

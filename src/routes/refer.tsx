@@ -61,7 +61,7 @@ function ReferPage() {
       <UserHeader balance={state.coins} />
 
       <section className="mt-8 text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight">Invite friends</h1>
+        <h1 className="text-4xl font-extrabold tracking-tight">Invite friends</h1>
         <p className="mt-3 text-muted-foreground">Your link works forever. There is no cap.</p>
       </section>
 
@@ -70,7 +70,7 @@ function ReferPage() {
           <Gift className="h-7 w-7" />
         </span>
         <p className="mt-5 text-sm font-semibold tracking-[0.2em] text-muted-foreground">FOR EVERY FRIEND</p>
-        <p className="mt-2 text-5xl font-extrabold tracking-tight">
+        <p className="mt-2 text-4xl font-extrabold tracking-tight">
           +{perFriend.toFixed(1)}
         </p>
         <p className="text-3xl font-extrabold tracking-tight text-accent">{COIN_SYMBOL}</p>

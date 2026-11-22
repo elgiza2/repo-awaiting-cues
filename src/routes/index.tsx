@@ -16,7 +16,6 @@ import {
   sessionProgress,
   usdToCoins,
   WELCOME_USD,
-  WITHDRAWAL_REFERRALS,
 } from "@/lib/mining";
 import { haptic } from "@/lib/telegram";
 
@@ -129,7 +128,7 @@ function HomePage() {
         </a>
       </section>
 
-      <div className="mx-auto mt-8 w-[76%]">
+      <div className="mx-auto mt-6 w-[62%]">
         <GramCoin active={mining && !done} />
       </div>
 
@@ -137,7 +136,7 @@ function HomePage() {
         type="button"
         onClick={onMainButton}
         disabled={mining && !done}
-        className="mt-10 flex h-16 w-full items-center justify-center gap-2 rounded-full bg-peach-gradient text-lg font-bold text-primary-foreground shadow-peach transition active:scale-[0.98] disabled:opacity-90"
+        className="mt-8 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-peach-gradient text-lg font-bold text-primary-foreground shadow-peach transition active:scale-[0.98] disabled:opacity-90"
       >
         {done ? (
           <>
@@ -182,8 +181,6 @@ function HomePage() {
 
         <Row label="GRAM balance" value={`${state.gram.toFixed(3)} / ${MIN_WITHDRAWAL}`} />
         <Bar value={state.gram / MIN_WITHDRAWAL} />
-        <Row label="Referrals" value={`${state.referrals} / ${WITHDRAWAL_REFERRALS}`} />
-        <Bar value={state.referrals / WITHDRAWAL_REFERRALS} />
 
         <Link
           to="/refer"

@@ -49,7 +49,7 @@ function WalletPage() {
     <AppScreen>
       <UserHeader balance={state.coins} />
 
-      <h1 className="mt-8 text-center text-5xl font-extrabold tracking-tight">Wallet</h1>
+      <h1 className="mt-8 text-center text-4xl font-extrabold tracking-tight">Wallet</h1>
 
       <section className="bg-top-glow mt-6 rounded-3xl border border-border bg-card px-5 py-7 text-center">
         <p className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">WITHDRAWABLE</p>
@@ -68,9 +68,7 @@ function WalletPage() {
         >
           <ArrowUp className="h-5 w-5" /> Withdraw GRAM
         </button>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Min. {MIN_WITHDRAWAL} GRAM · one-time fee {WITHDRAWAL_FEE} GRAM
-        </p>
+        <p className="mt-3 text-sm text-muted-foreground">Min. {MIN_WITHDRAWAL} GRAM</p>
       </section>
 
       <section className="mt-4 flex items-center gap-4 rounded-3xl border border-gold-border bg-card p-5">
@@ -323,11 +321,6 @@ function WithdrawSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title="Withdraw GRAM">
-      <ol className="mt-5 flex items-center gap-2 text-xs font-semibold">
-        <StepPill done={check.feePaid} active={check.nextStep === "fee"} label={`Fee ${WITHDRAWAL_FEE}`} />
-        <StepPill done={check.invitesOk} active={check.nextStep === "invites"} label={`${WITHDRAWAL_REFERRALS} invites`} />
-        <StepPill done={check.balanceOk} active={check.nextStep === "balance"} label={`${MIN_WITHDRAWAL} GRAM`} />
-      </ol>
 
       {check.nextStep === "fee" && (
         <StepBody
@@ -413,23 +406,6 @@ function WithdrawSheet({
         </StepBody>
       )}
     </Sheet>
-  );
-}
-
-function StepPill({ done, active, label }: { done: boolean; active: boolean; label: string }) {
-  return (
-    <li
-      className={
-        done
-          ? "flex flex-1 items-center justify-center gap-1 rounded-full bg-success/15 py-2 text-success"
-          : active
-            ? "flex flex-1 items-center justify-center gap-1 rounded-full bg-accent/15 py-2 text-accent"
-            : "flex flex-1 items-center justify-center gap-1 rounded-full bg-muted py-2 text-muted-foreground"
-      }
-    >
-      {done && <Check className="h-3.5 w-3.5" />}
-      {label}
-    </li>
   );
 }
 

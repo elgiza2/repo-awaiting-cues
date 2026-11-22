@@ -37,7 +37,7 @@ function TasksPage() {
       <UserHeader balance={state.coins} />
 
       <section className="mt-8 text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight">Tasks</h1>
+        <h1 className="text-4xl font-extrabold tracking-tight">Tasks</h1>
         <p className="mt-3 text-muted-foreground">
           {left === 0 ? "All done. New tasks drop daily." : `${left} task${left > 1 ? "s" : ""} left. Rewards credit instantly.`}
         </p>
