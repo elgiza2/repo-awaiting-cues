@@ -37,3 +37,4 @@ use the editor.
 - Suspend the withdrawal drawer while TON Connect is open and restore it on modal close; this avoids competing focus traps and accidental dismissals.
 - Telegram welcome sends an asset-backed photo caption with verified sticker-set emoji IDs and styled buttons, with a native-emoji/link fallback on rejected formatting.
 - Never display a successful withdrawal request until a verified payout service actually accepts it; local balances cannot authorize payments.
+- Server catalogue prices and session rewards live in the pure economy module; wallet BOC submissions are stored locally as provisional purchases, never as verified payout authorization.

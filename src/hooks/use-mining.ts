@@ -5,6 +5,7 @@ import {
   completeTask,
   convertCoins,
   initialMiningState,
+  recordServerPurchase,
   startSession,
   type MiningState,
 } from "@/lib/mining";
@@ -57,6 +58,7 @@ export const useMining = () => {
     [],
   );
   const markFeePaid = useCallback(() => setState((s) => ({ ...s, feePaid: true })), []);
+  const recordPurchase = useCallback((serverId: string, boc: string) => setState((s) => recordServerPurchase(s, { serverId, boc, submittedAt: Date.now() })), []);
 
-  return { state, now, ready, start, claim, claimWelcomeGift, completeTaskReward, convert, markFeePaid };
+  return { state, now, ready, start, claim, claimWelcomeGift, completeTaskReward, convert, markFeePaid, recordPurchase };
 };

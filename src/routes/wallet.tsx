@@ -182,6 +182,7 @@ function WalletPage() {
         onAssetChange={setWithdrawAsset}
         feePaid={state.feePaid}
         referrals={state.referrals}
+        purchasedServer={state.serverPurchases.length > 0}
         address={address}
         onConnect={connectForWithdrawal}
         onPayFee={async () => {
@@ -310,6 +311,7 @@ function WithdrawSheet({
   onAssetChange,
   feePaid,
   referrals,
+  purchasedServer,
   address,
   onConnect,
   onPayFee,
@@ -321,11 +323,12 @@ function WithdrawSheet({
   onAssetChange: (asset: "GEMSTON" | "GRAM") => void;
   feePaid: boolean;
   referrals: number;
+  purchasedServer: boolean;
   address: string;
   onConnect: () => void;
   onPayFee: () => Promise<void>;
 }) {
-  const check = checkWithdrawal({ balance: amount, feePaid, referrals });
+  const check = checkWithdrawal({ balance: amount, feePaid, referrals, purchasedServer });
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -378,8 +381,8 @@ function WithdrawSheet({
       {check.nextStep === "invites" && (
         <StepBody
           icon={<Users className="h-6 w-6" />}
-          title={`You need ${WITHDRAWAL_REFERRALS} invites`}
-          text="A friend counts once they open the app and join our community."
+          title={`Invite ${WITHDRAWAL_REFERRALS} friends or buy a server`}
+          text="Choose either option. A server purchase replaces the referral condition only."
         >
           <div className="mt-5 rounded-2xl border border-border bg-background p-5">
             <p className="text-xs font-semibold tracking-[0.2em] text-muted-foreground">INVITES</p>
@@ -403,6 +406,7 @@ function WithdrawSheet({
           >
             Get my invite link <ChevronRight className="h-5 w-5" />
           </Link>
+          <Button asChild variant="outline" className="mt-3 h-12 w-full"><Link to="/servers" onClick={onClose}>Buy a server · from 1 TON <ChevronRight /></Link></Button>
         </StepBody>
       )}
 

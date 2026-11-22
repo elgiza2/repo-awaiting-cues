@@ -1,5 +1,11 @@
 # Roadmap
 
+- [x] Add 90-server catalogue starting at 1 TON (1–90 TON), nine shared rig images and TON Connect purchase flow
+- [x] Allow a purchased server instead of 3 referrals in local game rules, still require withdrawal fee
+- [x] Test server prices, transaction amounts and withdrawal alternative (24 tests pass)
+- [x] Apply 0.5 GEMSTON per TON per 2-hour session for purchased servers
+- [ ] Verify a real server purchase on-chain and authorize the referral alternative server-side (needs persistent backend and payment verification)
+
 - [x] Refresh /start: MajorEmojis, bold caption, colored buttons, generated welcome photo (native fallback if Telegram refuses custom emoji)
 - [x] Fix wallet connection handoff and restore withdrawal sheet on cancel/return (checked mobile and desktop)
 - [x] Bot message app link points at production; publish requested as final deployment action

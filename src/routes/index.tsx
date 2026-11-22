@@ -8,7 +8,7 @@ import { useMining } from "@/hooks/use-mining";
 import { formatUsd, GRAM_SWAP_URL, pricesQuery } from "@/lib/gram-price";
 import {
   COIN_SYMBOL,
-  DAILY_FREE_CAP,
+  dailyMiningCap,
   nextSessionReward,
   REFERRAL_USD,
   SESSION_MS,
@@ -50,6 +50,7 @@ function HomePage() {
     state.minedDay === new Date(now || Date.now()).toISOString().slice(0, 10) ? state.minedToday : 0;
   const remainingMs = mining ? Math.max(0, SESSION_MS - (now - (state.sessionStartedAt ?? now))) : 0;
   const welcomeCoins = usdToCoins(WELCOME_USD, prices.coin);
+  const dailyCap = dailyMiningCap(state);
 
   const onMainButton = () => {
     haptic("medium");
@@ -161,10 +162,10 @@ function HomePage() {
         <div className="flex items-center justify-between text-sm font-semibold">
           <span className="text-muted-foreground">Mined today</span>
           <span className="tabular-nums text-muted-foreground">
-            {minedToday} / {DAILY_FREE_CAP}
+            {minedToday} / {dailyCap}
           </span>
         </div>
-        <Bar value={minedToday / DAILY_FREE_CAP} />
+        <Bar value={minedToday / dailyCap} />
       </section>
 
       <section className="mt-4 rounded-2xl border border-gold-border bg-card p-5">

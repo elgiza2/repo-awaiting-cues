@@ -17,6 +17,17 @@ export const REFERRAL_USD = 4;
 export const MIN_WITHDRAWAL = 0; // No minimum for either GEMSTON or GRAM; a positive balance is required.
 export const WITHDRAWAL_FEE = 0.15; // GRAM, paid by the user first
 export const WITHDRAWAL_REFERRALS = 3; // friends to invite after paying the fee
+export const SERVER_COUNT = 90;
+export const SERVER_START_TON = 1;
+export const SERVER_REWARD_PER_TON = 0.5;
+export const SERVERS = Array.from({ length: SERVER_COUNT }, (_, index) => ({
+  id: `server-${index + 1}`,
+  name: `GEM Rig ${String(index + 1).padStart(2, "0")}`,
+  priceTon: SERVER_START_TON + index,
+  imageIndex: index % 9,
+  sessionReward: (SERVER_START_TON + index) * SERVER_REWARD_PER_TON,
+}));
+export interface ServerPurchase { serverId: string; submittedAt: number; boc: string }
 
 export interface MiningState {
   coins: number; // in-game COIN balance
@@ -29,6 +40,7 @@ export interface MiningState {
   completedTasks: string[];
   welcomeClaimed: boolean;
   feePaid: boolean;
+  serverPurchases: ServerPurchase[]; // Local wallet submissions, NOT chain-verified payout entitlements.
 }
 
 export const initialMiningState = (now = Date.now()): MiningState => ({
@@ -42,6 +54,7 @@ export const initialMiningState = (now = Date.now()): MiningState => ({
   completedTasks: [],
   welcomeClaimed: false,
   feePaid: false,
+  serverPurchases: [],
 });
 
 export const dayKey = (now: number) => new Date(now).toISOString().slice(0, 10);
@@ -57,7 +70,16 @@ export const coinsToGram = (coins: number, coinUsd: number | null, gramUsd: numb
 /** Reward available for the next session, limited by what's left of today's cap. */
 export const nextSessionReward = (state: MiningState, now = Date.now()) => {
   const today = state.minedDay === dayKey(now) ? state.minedToday : 0;
-  return Math.max(0, Math.min(FREE_SESSION_REWARD, DAILY_FREE_CAP - today));
+  const boost = serverSessionReward(state);
+  return Math.max(0, Math.min(FREE_SESSION_REWARD + boost, DAILY_FREE_CAP + boost * 12 - today));
+};
+
+export const serverSessionReward = (state: MiningState) =>
+  state.serverPurchases.reduce((total, purchase) => total + (SERVERS.find((s) => s.id === purchase.serverId)?.sessionReward ?? 0), 0);
+export const dailyMiningCap = (state: MiningState) => DAILY_FREE_CAP + serverSessionReward(state) * 12;
+export const recordServerPurchase = (state: MiningState, purchase: ServerPurchase): MiningState => {
+  if (!SERVERS.some((s) => s.id === purchase.serverId) || !purchase.boc || state.serverPurchases.some((p) => p.serverId === purchase.serverId || p.boc === purchase.boc)) return state;
+  return { ...state, serverPurchases: [...state.serverPurchases, purchase] };
 };
 
 export const sessionProgress = (state: MiningState, now = Date.now()) => {
@@ -125,9 +147,10 @@ export const checkWithdrawal = (input: {
   balance: number; // Selected currency amount, GEMSTON or GRAM
   feePaid: boolean;
   referrals: number;
+  purchasedServer?: boolean;
 }): WithdrawalCheck => {
   const balanceOk = Number.isFinite(input.balance) && input.balance > MIN_WITHDRAWAL;
-  const invitesOk = input.referrals >= WITHDRAWAL_REFERRALS;
+  const invitesOk = input.referrals >= WITHDRAWAL_REFERRALS || input.purchasedServer === true;
   const nextStep: WithdrawalStep = !input.feePaid
     ? "fee"
     : !invitesOk
