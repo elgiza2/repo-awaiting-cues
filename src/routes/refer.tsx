@@ -107,7 +107,7 @@ function ReferPage() {
         <ol className="mt-4 space-y-4">
           {[
             "Share your link.",
-            "Your friend joins.",
+            "Your friend joins and withdraws.",
             `Earn $${REFERRAL_USD} in ${COIN_SYMBOL}.`,
           ].map((step, i) => (
             <li key={step} className="flex items-start gap-3">

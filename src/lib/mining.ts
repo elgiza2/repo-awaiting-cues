@@ -147,7 +147,7 @@ export interface WithdrawalCheck {
 export const checkWithdrawal = (input: {
   balance: number; // Selected currency amount, GEMSTON or GRAM
   feePaid: boolean;
-  referrals: number;
+  referrals: number; // Qualified referrals only: an invited friend counts once they have withdrawn.
   purchasedServer?: boolean;
   adsWatched?: number;
 }): WithdrawalCheck => {
