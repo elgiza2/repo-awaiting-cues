@@ -1,5 +1,10 @@
 # Roadmap
 
+- [ ] Persist real Telegram referrals, read pending/qualified counts from the server, qualify only after verified withdrawals
+- [ ] Remove requested server description
+- [ ] Remove the disabled final withdrawal button without claiming an unprocessed payout succeeded
+- [ ] Verify referral registration, duplicate/self-referral protection and private counts
+
 - [x] Restyle all GEMSTON pages with supplied glass/slab design, preserving existing functionality
 - [x] Remove top application name/icon and menu, reduce text, prioritize balances and actions
 - [x] Fix wallet manifest: private -dev host returned 403; published manifest and icon return 200, wallet picker opens and withdrawal restores on close
