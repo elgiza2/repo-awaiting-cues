@@ -2,10 +2,11 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
 import { ArrowDownUp, ArrowUp, Check, ChevronRight, Info, Loader2, ShieldCheck, Users, Wallet, X } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AppScreen } from "@/components/gram/AppScreen";
 import { GramMark } from "@/components/gram/GramMark";
 import { UserHeader } from "@/components/gram/UserHeader";
+import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useMining } from "@/hooks/use-mining";
 import { formatUsd, pricesQuery } from "@/lib/gram-price";
@@ -13,7 +14,6 @@ import {
   checkWithdrawal,
   COIN_SYMBOL,
   coinsToGram,
-  MIN_WITHDRAWAL,
   WITHDRAWAL_FEE,
   WITHDRAWAL_REFERRALS,
 } from "@/lib/mining";
@@ -41,6 +41,27 @@ function WalletPage() {
   const [tonConnectUI] = useTonConnectUI();
   const address = useTonAddress();
   const [sheet, setSheet] = useState<"convert" | "withdraw" | null>(null);
+  const [withdrawAsset, setWithdrawAsset] = useState<"GEMSTON" | "GRAM">("GRAM");
+  const resumeWithdrawal = useRef(false);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  useEffect(() => tonConnectUI.onModalStateChange((modal) => {
+    setWalletModalOpen(modal.status === "opened");
+    if (modal.status === "closed" && resumeWithdrawal.current) {
+      resumeWithdrawal.current = false;
+      setSheet("withdraw");
+    }
+  }), [tonConnectUI]);
+  const connectForWithdrawal = async () => {
+    resumeWithdrawal.current = true;
+    setWalletModalOpen(true);
+    try {
+      await tonConnectUI.openModal();
+    } catch {
+      resumeWithdrawal.current = false;
+      setWalletModalOpen(false);
+      setSheet("withdraw");
+    }
+  };
 
   const gramUsd = state.gram * (prices.gram ?? 0);
   const coinsUsd = state.coins * (prices.coin ?? 0);
@@ -68,7 +89,7 @@ function WalletPage() {
         >
           <ArrowUp className="h-5 w-5" /> Withdraw GRAM
         </button>
-        <p className="mt-3 text-sm text-muted-foreground">Min. {MIN_WITHDRAWAL} GRAM</p>
+        <p className="mt-3 text-sm text-muted-foreground">GEMSTON or GRAM · no minimum · anytime</p>
       </section>
 
       <section className="mt-4 flex items-center gap-4 rounded-3xl border border-gold-border bg-card p-5">
@@ -154,18 +175,19 @@ function WalletPage() {
       />
 
       <WithdrawSheet
-        open={sheet === "withdraw"}
+        open={sheet === "withdraw" && !walletModalOpen}
         onClose={() => setSheet(null)}
-        gram={state.gram}
+        asset={withdrawAsset}
+        amount={withdrawAsset === "GRAM" ? state.gram : state.coins}
+        onAssetChange={setWithdrawAsset}
         feePaid={state.feePaid}
         referrals={state.referrals}
         address={address}
-        onConnect={() => tonConnectUI.openModal()}
+        onConnect={connectForWithdrawal}
         onPayFee={async () => {
           await tonConnectUI.sendTransaction(withdrawalFeeTx());
           markFeePaid();
         }}
-        onConvert={() => setSheet("convert")}
       />
     </AppScreen>
   );
@@ -283,28 +305,29 @@ function ConvertSheet({
 function WithdrawSheet({
   open,
   onClose,
-  gram,
+  asset,
+  amount,
+  onAssetChange,
   feePaid,
   referrals,
   address,
   onConnect,
   onPayFee,
-  onConvert,
 }: {
   open: boolean;
   onClose: () => void;
-  gram: number;
+  asset: "GEMSTON" | "GRAM";
+  amount: number;
+  onAssetChange: (asset: "GEMSTON" | "GRAM") => void;
   feePaid: boolean;
   referrals: number;
   address: string;
   onConnect: () => void;
   onPayFee: () => Promise<void>;
-  onConvert: () => void;
 }) {
-  const check = checkWithdrawal({ balance: gram, feePaid, referrals });
+  const check = checkWithdrawal({ balance: amount, feePaid, referrals });
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [requested, setRequested] = useState(false);
 
   const payFee = async () => {
     setError(null);
@@ -320,13 +343,20 @@ function WithdrawSheet({
   };
 
   return (
-    <Sheet open={open} onClose={onClose} title="Withdraw GRAM">
+    <Sheet open={open} onClose={onClose} title={`Withdraw ${asset}`}>
+      <div className="mt-5 grid grid-cols-2 gap-2" role="group" aria-label="Withdrawal currency">
+        {(["GEMSTON", "GRAM"] as const).map((currency) => (
+          <Button key={currency} variant={currency === asset ? "default" : "outline"} aria-pressed={asset === currency} onClick={() => onAssetChange(currency)}>
+            {currency}
+          </Button>
+        ))}
+      </div>
 
       {check.nextStep === "fee" && (
         <StepBody
           icon={<Wallet className="h-6 w-6" />}
           title={`Pay the ${WITHDRAWAL_FEE} GRAM fee`}
-          text="A one-time network fee. It's paid straight from your connected TON wallet."
+          text="A one-time withdrawal fee, paid from your TON wallet. On-chain payouts are not enabled yet."
         >
           <div className="mt-5 rounded-2xl border border-border bg-background p-4 text-left text-sm">
             <Line label="Fee" value={`${WITHDRAWAL_FEE} GRAM`} />
@@ -379,30 +409,20 @@ function WithdrawSheet({
       {check.nextStep === "balance" && (
         <StepBody
           icon={<ArrowDownUp className="h-6 w-6" />}
-          title={`Reach ${MIN_WITHDRAWAL} GRAM`}
-          text={`You have ${gram.toFixed(3)} GRAM. Convert more ${COIN_SYMBOL} to reach the minimum.`}
+          title={`No ${asset} balance yet`}
+          text="Any positive balance is eligible after completing the conditions. There is no minimum or withdrawal schedule."
         >
-          <PrimaryButton onClick={onConvert}>Convert {COIN_SYMBOL}</PrimaryButton>
+          <Link to="/" onClick={onClose} className="mt-5 block font-bold text-accent">Back to mining</Link>
         </StepBody>
       )}
 
       {check.nextStep === "ready" && (
         <StepBody
           icon={<Check className="h-6 w-6" />}
-          title={requested ? "Request received" : "Ready to withdraw"}
-          text={
-            requested
-              ? "Your withdrawal is queued. GRAM lands in your connected wallet after review."
-              : `${gram.toFixed(3)} GRAM to ${address ? shortAddress(address) : "your wallet"}.`
-          }
+          title="Conditions completed"
+          text={`${amount.toFixed(3)} ${asset} · No withdrawal schedule. On-chain payouts require verified balances and a funded payout wallet, which are not connected yet.`}
         >
-          {!requested && (
-            <PrimaryButton
-              onClick={() => (address ? setRequested(true) : onConnect())}
-            >
-              {address ? "Withdraw now" : "Connect wallet"}
-            </PrimaryButton>
-          )}
+          <PrimaryButton disabled onClick={() => {}}>Payouts not enabled yet</PrimaryButton>
         </StepBody>
       )}
     </Sheet>

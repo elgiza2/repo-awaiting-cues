@@ -34,3 +34,6 @@ use the editor.
 - Player progress is client-side (localStorage via `useMining`) until a backend exists; never treat it as trusted for payouts.
 - Live prices come from STON.fi via `pricesQuery`; the router uses the SSR query integration so first render matches the server.
 - TON Connect manifest is served by the `/tonconnect-manifest.json` server route; private preview hosts point wallets at the public `-dev` host.
+- Suspend the withdrawal drawer while TON Connect is open and restore it on modal close; this avoids competing focus traps and accidental dismissals.
+- Telegram welcome sends an asset-backed photo caption with verified sticker-set emoji IDs and styled buttons, with a native-emoji/link fallback on rejected formatting.
+- Never display a successful withdrawal request until a verified payout service actually accepts it; local balances cannot authorize payments.

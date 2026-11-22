@@ -14,10 +14,10 @@ import { haptic, openTelegramLink } from "@/lib/telegram";
 export const Route = createFileRoute("/tasks")({
   head: () => ({
     meta: [
-      { title: "Tasks — GRAM Miner" },
-      { name: "description", content: "Complete quick tasks to earn extra GRAM instantly." },
-      { property: "og:title", content: "Tasks — GRAM Miner" },
-      { property: "og:description", content: "Complete quick tasks to earn extra GRAM instantly." },
+      { title: "Tasks — GEMSTON Miner" },
+      { name: "description", content: "Community and Talon tasks with GEMSTON rewards at live prices." },
+      { property: "og:title", content: "Tasks — GEMSTON Miner" },
+      { property: "og:description", content: "Community and Talon tasks with GEMSTON rewards at live prices." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

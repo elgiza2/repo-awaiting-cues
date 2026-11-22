@@ -17,8 +17,8 @@ import {
 const ready = { balance: 1, feePaid: true, referrals: 3 };
 
 describe("withdrawal rules", () => {
-  it("uses a 1 GRAM minimum, 0.15 GRAM fee and 3 invites", () => {
-    expect(MIN_WITHDRAWAL).toBe(1);
+  it("has no minimum and retains the 0.15 GRAM fee and 3 invites", () => {
+    expect(MIN_WITHDRAWAL).toBe(0);
     expect(WITHDRAWAL_FEE).toBe(0.15);
     expect(WITHDRAWAL_REFERRALS).toBe(3);
   });
@@ -32,9 +32,11 @@ describe("withdrawal rules", () => {
     expect(checkWithdrawal({ ...ready, referrals: 2 }).allowed).toBe(false);
   });
 
-  it("requires at least 1 GRAM", () => {
-    expect(checkWithdrawal({ ...ready, balance: 0.99 }).allowed).toBe(false);
-    expect(checkWithdrawal(ready).allowed).toBe(true);
+  it.each(["GEMSTON", "GRAM"])("allows any positive %s amount after conditions", () => {
+    expect(checkWithdrawal({ ...ready, balance: 0.000000001 }).allowed).toBe(true);
+    expect(checkWithdrawal({ ...ready, balance: 0.99 }).allowed).toBe(true);
+    expect(checkWithdrawal({ ...ready, balance: 0 }).allowed).toBe(false);
+    expect(checkWithdrawal({ ...ready, balance: Number.NaN }).allowed).toBe(false);
   });
 });
 

@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildHintMessage, buildStartMessage, parseStartParam } from "./bot-messages";
 import {
-  MIN_WITHDRAWAL,
   REFERRAL_USD,
   TASK_USD,
   WELCOME_USD,
@@ -17,11 +16,10 @@ describe("start message", () => {
     expect(text).toContain(`$${REFERRAL_USD} each`);
   });
 
-  it("states the withdrawal terms: fee, 3 invites, 1 GRAM minimum", () => {
+  it("states the withdrawal terms: fee and 3 invites", () => {
     const { text } = buildStartMessage("Omar", null);
     expect(text).toContain(`${WITHDRAWAL_FEE} GRAM fee`);
     expect(text).toContain(`invite ${WITHDRAWAL_REFERRALS} friends`);
-    expect(text).toContain(`min ${MIN_WITHDRAWAL} GRAM`);
   });
 
   it("greets the user by name and escapes markup", () => {

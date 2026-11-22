@@ -5,7 +5,7 @@ export const COMMUNITY_URL = "https://t.me/gemstoe";
  * Public address of this build's Mini App. Telegram opens it from the bot's
  * /start message, and BotFather's Main Mini App should point here too.
  */
-export const MINI_APP_URL = "https://project--427a8818-4b19-402c-84f5-267242b69aaf-dev.lovable.app";
+export const MINI_APP_URL = "https://repo-awaiting-cues.lovable.app";
 
 /** Opens the bot's main Mini App with the inviter's id as start param. */
 export const inviteLink = (userId: number | null) =>

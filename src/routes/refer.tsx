@@ -14,10 +14,10 @@ import { getTelegramUser, haptic, openTelegramLink } from "@/lib/telegram";
 export const Route = createFileRoute("/refer")({
   head: () => ({
     meta: [
-      { title: "Invite friends — GRAM Miner" },
-      { name: "description", content: "Share your invite link and earn GRAM for every friend who starts mining." },
-      { property: "og:title", content: "Invite friends — GRAM Miner" },
-      { property: "og:description", content: "Share your invite link and earn GRAM for every friend who starts mining." },
+      { title: "Invite friends — GEMSTON Miner" },
+      { name: "description", content: "Share your GEMSTON Miner invite link and view referral rewards." },
+      { property: "og:title", content: "Invite friends — GEMSTON Miner" },
+      { property: "og:description", content: "Share your GEMSTON Miner invite link and view referral rewards." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

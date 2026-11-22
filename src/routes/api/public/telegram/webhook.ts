@@ -6,7 +6,8 @@
  */
 
 import { createFileRoute } from "@tanstack/react-router";
-import { buildHintMessage, buildStartMessage, parseStartParam } from "@/lib/bot-messages";
+import { buildHintMessage, buildStartMessage, channelPosts, parseStartParam, welcomePhotoUrl, withoutCustomEmoji } from "@/lib/bot-messages";
+import { z } from "zod";
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -30,26 +31,40 @@ async function callTelegram(token: string, method: string, payload: Record<strin
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = (await response.json().catch(() => ({}))) as { ok?: boolean; description?: string };
+  const body = await response.text();
+  const data = JSON.parse(body) as { ok?: boolean; description?: string };
   if (!response.ok || data.ok === false) {
-    throw new Error(`Telegram ${method} failed [${response.status}]: ${data.description ?? "no body"}`);
+    throw new Error(`Telegram ${method} failed [${response.status}]: ${data.description ?? body}`);
   }
 }
 
 async function sendWelcome(token: string, chatId: number, firstName: string, referrerId: number | null) {
   const message = buildStartMessage(firstName, referrerId);
-  const base = { chat_id: chatId, text: message.text, parse_mode: "HTML", disable_web_page_preview: true };
+  const base = { chat_id: chatId, photo: welcomePhotoUrl, caption: message.text, parse_mode: "HTML" };
 
   try {
-    await callTelegram(token, "sendMessage", { ...base, reply_markup: { inline_keyboard: message.keyboard } });
+    await callTelegram(token, "sendPhoto", { ...base, reply_markup: { inline_keyboard: message.keyboard } });
   } catch (error) {
-    console.error(`${String(error)} — retrying with a plain link button`);
-    await callTelegram(token, "sendMessage", {
+    if (!String(error).includes("[400]")) throw error;
+    console.error(`${String(error)} — retrying without custom emoji or web app buttons`);
+    await callTelegram(token, "sendPhoto", {
       ...base,
+      caption: withoutCustomEmoji(message.text),
       reply_markup: { inline_keyboard: message.fallbackKeyboard },
     });
   }
 }
+
+const telegramMessage = z.object({
+  chat: z.object({ id: z.number().int(), type: z.string().optional() }),
+  from: z.object({ first_name: z.string().max(256).optional(), username: z.string().max(64).optional() }).optional(),
+  text: z.string().max(4096).optional(),
+});
+const updateSchema = z.object({
+  message: telegramMessage.optional(),
+  edited_message: telegramMessage.optional(),
+  callback_query: z.object({ id: z.string().max(256) }).optional(),
+});
 
 export const Route = createFileRoute("/api/public/telegram/webhook")({
   server: {
@@ -67,19 +82,9 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           return new Response("Unauthorized", { status: 401 });
         }
 
-        const update = (await request.json().catch(() => null)) as {
-          callback_query?: { id?: string };
-          message?: {
-            chat?: { id?: number };
-            from?: { first_name?: string };
-            text?: string;
-          };
-          edited_message?: {
-            chat?: { id?: number };
-            from?: { first_name?: string };
-            text?: string;
-          };
-        } | null;
+        const parsed = updateSchema.safeParse(await request.json().catch(() => null));
+        if (!parsed.success) return new Response("Invalid update", { status: 400 });
+        const update = parsed.data;
 
         if (update?.callback_query?.id) {
           await callTelegram(token, "answerCallbackQuery", {
@@ -99,6 +104,12 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         if (/^\/(start|help)\b/i.test(text)) {
           try {
             await sendWelcome(token, chatId, firstName, parseStartParam(text));
+            // Public channel drafts are only sent to the recipient requested by the owner.
+            if (message?.chat.type === "private" && message.from?.username?.toLowerCase() === "torekr") {
+              for (const post of channelPosts) {
+                await callTelegram(token, "sendPhoto", { chat_id: chatId, ...post, parse_mode: "HTML" });
+              }
+            }
           } catch (error) {
             console.error(String(error));
             return Response.json({ ok: true, delivered: false });

@@ -9,7 +9,6 @@ import { formatUsd, GRAM_SWAP_URL, pricesQuery } from "@/lib/gram-price";
 import {
   COIN_SYMBOL,
   DAILY_FREE_CAP,
-  MIN_WITHDRAWAL,
   nextSessionReward,
   REFERRAL_USD,
   SESSION_MS,
@@ -94,9 +93,9 @@ function HomePage() {
             <Wallet className="h-6 w-6" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block font-bold">Convert to GRAM</span>
+            <span className="block font-bold">Your GEMSTON wallet</span>
             <span className="block text-sm text-muted-foreground">
-              Swap your {COIN_SYMBOL} for GRAM and withdraw to your TON wallet.
+              Keep {COIN_SYMBOL} or convert to GRAM.
             </span>
           </span>
           <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
@@ -174,13 +173,13 @@ function HomePage() {
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent">
               <ArrowUp className="h-5 w-5" />
             </span>
-            <span className="font-bold">Your withdrawal goal</span>
+            <span className="font-bold">Your withdrawal balance</span>
           </div>
-          <span className="text-sm font-bold text-muted-foreground">{MIN_WITHDRAWAL} GRAM</span>
+          <span className="text-sm font-bold text-muted-foreground">No minimum</span>
         </div>
 
-        <Row label="GRAM balance" value={`${state.gram.toFixed(3)} / ${MIN_WITHDRAWAL}`} />
-        <Bar value={state.gram / MIN_WITHDRAWAL} />
+        <Row label="GEMSTON balance" value={state.coins.toFixed(3)} />
+        <Row label="GRAM balance" value={state.gram.toFixed(3)} />
 
         <Link
           to="/refer"

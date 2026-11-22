@@ -14,7 +14,7 @@ export const WELCOME_USD = 7;
 export const TASK_USD = 3;
 export const REFERRAL_USD = 4;
 
-export const MIN_WITHDRAWAL = 1; // GRAM
+export const MIN_WITHDRAWAL = 0; // No minimum for either GEMSTON or GRAM; a positive balance is required.
 export const WITHDRAWAL_FEE = 0.15; // GRAM, paid by the user first
 export const WITHDRAWAL_REFERRALS = 3; // friends to invite after paying the fee
 
@@ -116,17 +116,17 @@ export interface WithdrawalCheck {
   balanceOk: boolean;
   feePaid: boolean;
   invitesOk: boolean;
-  /** What the user must do next: pay the fee, then invite friends, then reach the minimum. */
+  /** Pay first, invite friends next; a positive balance is required, with no minimum or time window. */
   nextStep: WithdrawalStep;
   allowed: boolean;
 }
 
 export const checkWithdrawal = (input: {
-  balance: number; // GRAM
+  balance: number; // Selected currency amount, GEMSTON or GRAM
   feePaid: boolean;
   referrals: number;
 }): WithdrawalCheck => {
-  const balanceOk = input.balance >= MIN_WITHDRAWAL;
+  const balanceOk = Number.isFinite(input.balance) && input.balance > MIN_WITHDRAWAL;
   const invitesOk = input.referrals >= WITHDRAWAL_REFERRALS;
   const nextStep: WithdrawalStep = !input.feePaid
     ? "fee"
