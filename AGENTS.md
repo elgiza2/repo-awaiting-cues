@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Game economy rules live in `src/lib/mining.ts` as pure functions with tests in `src/lib/mining.test.ts`; UI reads constants from there so values change in one place.
+- Player progress is client-side (localStorage via `useMining`) until a backend exists; never treat it as trusted for payouts.
+- Live prices come from STON.fi via `pricesQuery`; the router uses the SSR query integration so first render matches the server.
+- TON Connect manifest is served by the `/tonconnect-manifest.json` server route; private preview hosts point wallets at the public `-dev` host.
