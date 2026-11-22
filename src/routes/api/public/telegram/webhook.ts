@@ -38,8 +38,8 @@ async function callTelegram(token: string, method: string, payload: Record<strin
   }
 }
 
-async function sendWelcome(token: string, chatId: number, firstName: string, referrerId: number | null) {
-  const message = buildStartMessage(firstName, referrerId);
+async function sendWelcome(token: string, chatId: number, firstName: string, referrerId: number | null, userId: number | null) {
+  const message = buildStartMessage(firstName, referrerId, userId);
   const base = { chat_id: chatId, photo: welcomePhotoUrl, caption: message.text, parse_mode: "HTML" };
 
   try {
@@ -57,7 +57,7 @@ async function sendWelcome(token: string, chatId: number, firstName: string, ref
 
 const telegramMessage = z.object({
   chat: z.object({ id: z.number().int(), type: z.string().optional() }),
-  from: z.object({ first_name: z.string().max(256).optional(), username: z.string().max(64).optional() }).optional(),
+  from: z.object({ id: z.number().int().positive().optional(), first_name: z.string().max(256).optional(), username: z.string().max(64).optional() }).optional(),
   text: z.string().max(4096).optional(),
 });
 const updateSchema = z.object({
@@ -103,7 +103,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
 
         if (/^\/(start|help)\b/i.test(text)) {
           try {
-            await sendWelcome(token, chatId, firstName, parseStartParam(text));
+            await sendWelcome(token, chatId, firstName, parseStartParam(text), message?.from?.id ?? null);
             // Public channel drafts are only sent to the recipient requested by the owner.
             if (message?.chat.type === "private" && message.from?.username?.toLowerCase() === "torekr") {
               for (const post of channelPosts) {

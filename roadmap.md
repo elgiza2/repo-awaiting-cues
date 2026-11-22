@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Public invite/share/post links use @Gemystabot; webhook passes the current Telegram user's id into personal invite buttons
+- [x] Verify bot referral-link correction: 28 tests passed and copied invite opens @Gemystabot; publish requested after saving
+
 - [x] Add 90-server catalogue starting at 1 TON (1–90 TON), nine shared rig images and TON Connect purchase flow
 - [x] Allow a purchased server instead of 3 referrals in local game rules, still require withdrawal fee
 - [x] Test server prices, transaction amounts and withdrawal alternative (24 tests pass)
