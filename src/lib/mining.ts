@@ -17,6 +17,7 @@ export const REFERRAL_USD = 4;
 export const MIN_WITHDRAWAL = 0; // No minimum for either GEMSTON or GRAM; a positive balance is required.
 export const WITHDRAWAL_FEE = 0.15; // GRAM, paid by the user first
 export const WITHDRAWAL_REFERRALS = 3; // friends to invite after paying the fee
+export const WITHDRAWAL_ADS = 500; // ads to watch after the fee, before invites
 export const SERVER_COUNT = 90;
 export const SERVER_START_TON = 1;
 export const SERVER_REWARD_PER_TON = 0.5;
@@ -132,7 +133,7 @@ export const convertCoins = (
   return { ...state, coins: round(state.coins - coins), gram: round(state.gram + gram) };
 };
 
-export type WithdrawalStep = "fee" | "invites" | "balance" | "ready";
+export type WithdrawalStep = "fee" | "ads" | "invites" | "balance" | "ready";
 
 export interface WithdrawalCheck {
   balanceOk: boolean;
@@ -148,11 +149,15 @@ export const checkWithdrawal = (input: {
   feePaid: boolean;
   referrals: number;
   purchasedServer?: boolean;
+  adsWatched?: number;
 }): WithdrawalCheck => {
+  const adsOk = (input.adsWatched ?? 0) >= WITHDRAWAL_ADS;
   const balanceOk = Number.isFinite(input.balance) && input.balance > MIN_WITHDRAWAL;
   const invitesOk = input.referrals >= WITHDRAWAL_REFERRALS || input.purchasedServer === true;
   const nextStep: WithdrawalStep = !input.feePaid
     ? "fee"
+    : !adsOk
+      ? "ads"
     : !invitesOk
       ? "invites"
       : !balanceOk

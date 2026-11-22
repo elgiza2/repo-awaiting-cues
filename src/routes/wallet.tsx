@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTonAddress, useTonConnectUI } from "@tonconnect/ui-react";
-import { ArrowDownUp, ArrowUp, Check, ChevronRight, Info, Loader2, ShieldCheck, Users, Wallet, X } from "lucide-react";
+import { ArrowDownUp, ArrowUp, Check, ChevronRight, Info, Loader2, Tv, ShieldCheck, Users, Wallet, X } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AppScreen } from "@/components/gram/AppScreen";
 import { GramMark } from "@/components/gram/GramMark";
@@ -12,6 +12,7 @@ import { useMining } from "@/hooks/use-mining";
 import { formatUsd, pricesQuery } from "@/lib/gram-price";
 import {
   checkWithdrawal,
+  WITHDRAWAL_ADS,
   COIN_SYMBOL,
   coinsToGram,
   WITHDRAWAL_FEE,
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/wallet")({
 
 function WalletPage() {
   const { data: prices } = useSuspenseQuery(pricesQuery);
-  const { state, convert, markFeePaid } = useMining();
+  const { state, convert, markFeePaid, watchAd } = useMining();
   const [tonConnectUI] = useTonConnectUI();
   const address = useTonAddress();
   const [sheet, setSheet] = useState<"convert" | "withdraw" | null>(null);
@@ -182,6 +183,13 @@ function WalletPage() {
         onAssetChange={setWithdrawAsset}
         feePaid={state.feePaid}
         referrals={state.referrals}
+        adsWatched={state.adsWatched}
+        onWatchAd={async () => {
+          const show = (window as unknown as Record<string, (() => Promise<void>) | undefined>)["show_12324379"];
+          if (!show) throw new Error("ads unavailable");
+          await show();
+          watchAd();
+        }}
         purchasedServer={state.serverPurchases.length > 0}
         address={address}
         onConnect={connectForWithdrawal}
@@ -312,6 +320,8 @@ function WithdrawSheet({
   onAssetChange,
   feePaid,
   referrals,
+  adsWatched,
+  onWatchAd,
   purchasedServer,
   address,
   onConnect,
@@ -324,12 +334,14 @@ function WithdrawSheet({
   onAssetChange: (asset: "GEMSTON" | "GRAM") => void;
   feePaid: boolean;
   referrals: number;
+  adsWatched: number;
+  onWatchAd: () => Promise<void>;
   purchasedServer: boolean;
   address: string;
   onConnect: () => void;
   onPayFee: () => Promise<void>;
 }) {
-  const check = checkWithdrawal({ balance: amount, feePaid, referrals, purchasedServer });
+  const check = checkWithdrawal({ balance: amount, feePaid, referrals, purchasedServer, adsWatched });
   const [paying, setPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -375,6 +387,30 @@ function WithdrawSheet({
             ) : (
               <>Connect wallet <ChevronRight className="h-5 w-5" /></>
             )}
+          </PrimaryButton>
+        </StepBody>
+      )}
+
+      {check.nextStep === "ads" && (
+        <StepBody icon={<Tv className="h-6 w-6" />} title={`Watch ${WITHDRAWAL_ADS} ads`} text="Next step before invites.">
+          <div className="mt-5 rounded-lg border border-border bg-background p-5">
+            <p className="text-4xl font-extrabold tabular-nums">
+              {adsWatched} <span className="text-muted-foreground">/ {WITHDRAWAL_ADS}</span>
+            </p>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
+              <div className="h-full rounded-full bg-peach-gradient" style={{ width: `${Math.min(100, (adsWatched / WITHDRAWAL_ADS) * 100)}%` }} />
+            </div>
+          </div>
+          {error && <p className="mt-3 text-center text-sm text-destructive">{error}</p>}
+          <PrimaryButton
+            disabled={paying}
+            onClick={async () => {
+              setError(null);
+              setPaying(true);
+              try { await onWatchAd(); haptic("light"); } catch { setError("Ad not available. Try again."); } finally { setPaying(false); }
+            }}
+          >
+            {paying ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Watch ad</>}
           </PrimaryButton>
         </StepBody>
       )}

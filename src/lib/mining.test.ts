@@ -19,7 +19,7 @@ import {
 } from "./mining";
 import { PAYMENT_ADDRESS, serverPurchaseTx } from "./payments";
 
-const ready = { balance: 1, feePaid: true, referrals: 3 };
+const ready = { balance: 1, feePaid: true, referrals: 3, adsWatched: 500 };
 
 describe("withdrawal rules", () => {
   it("has no minimum and retains the 0.15 GRAM fee and 3 invites", () => {
@@ -38,8 +38,8 @@ describe("withdrawal rules", () => {
   });
 
   it("accepts a purchased server instead of referrals", () => {
-    expect(checkWithdrawal({ balance: 0.01, feePaid: true, referrals: 0, purchasedServer: true }).allowed).toBe(true);
-    expect(checkWithdrawal({ balance: 0.01, feePaid: true, referrals: 0, purchasedServer: false }).nextStep).toBe("invites");
+    expect(checkWithdrawal({ balance: 0.01, feePaid: true, referrals: 0, adsWatched: 500, purchasedServer: true }).allowed).toBe(true);
+    expect(checkWithdrawal({ balance: 0.01, feePaid: true, referrals: 0, adsWatched: 500, purchasedServer: false }).nextStep).toBe("invites");
   });
 
   it("a purchased server does not replace the 0.15 fee", () => {
@@ -51,6 +51,14 @@ describe("withdrawal rules", () => {
     expect(checkWithdrawal({ ...ready, balance: 0.99 }).allowed).toBe(true);
     expect(checkWithdrawal({ ...ready, balance: 0 }).allowed).toBe(false);
     expect(checkWithdrawal({ ...ready, balance: Number.NaN }).allowed).toBe(false);
+  });
+});
+
+describe("ads condition", () => {
+  it("requires 500 ads after the fee and before invites", () => {
+    expect(checkWithdrawal({ ...ready, adsWatched: 499 }).nextStep).toBe("ads");
+    expect(checkWithdrawal({ ...ready, adsWatched: 500, referrals: 0 }).nextStep).toBe("invites");
+    expect(checkWithdrawal({ ...ready, feePaid: false, adsWatched: 0 }).nextStep).toBe("fee");
   });
 });
 

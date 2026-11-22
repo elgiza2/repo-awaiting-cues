@@ -58,7 +58,8 @@ export const useMining = () => {
     [],
   );
   const markFeePaid = useCallback(() => setState((s) => ({ ...s, feePaid: true })), []);
+  const watchAd = useCallback(() => setState((s) => ({ ...s, adsWatched: s.adsWatched + 1 })), []);
   const recordPurchase = useCallback((serverId: string, boc: string) => setState((s) => recordServerPurchase(s, { serverId, boc, submittedAt: Date.now() })), []);
 
-  return { state, now, ready, start, claim, claimWelcomeGift, completeTaskReward, convert, markFeePaid, recordPurchase };
+  return { state, now, ready, start, claim, claimWelcomeGift, completeTaskReward, convert, markFeePaid, recordPurchase, watchAd };
 };
