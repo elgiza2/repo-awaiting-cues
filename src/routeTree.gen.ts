@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReferRouteImport } from './routes/refer'
+import { Route as ServersRouteImport } from './routes/servers'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as TonconnectManifestDotjsonRouteImport } from './routes/tonconnect-manifest[.]json'
 import { Route as WalletRouteImport } from './routes/wallet'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const ReferRoute = ReferRouteImport.update({
   id: '/refer',
   path: '/refer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServersRoute = ServersRouteImport.update({
+  id: '/servers',
+  path: '/servers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TasksRoute = TasksRouteImport.update({
@@ -52,6 +58,7 @@ const ApiPublicTelegramWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/refer': typeof ReferRoute
+  '/servers': typeof ServersRoute
   '/tasks': typeof TasksRoute
   '/tonconnect-manifest.json': typeof TonconnectManifestDotjsonRoute
   '/wallet': typeof WalletRoute
@@ -60,6 +67,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/refer': typeof ReferRoute
+  '/servers': typeof ServersRoute
   '/tasks': typeof TasksRoute
   '/tonconnect-manifest.json': typeof TonconnectManifestDotjsonRoute
   '/wallet': typeof WalletRoute
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/refer': typeof ReferRoute
+  '/servers': typeof ServersRoute
   '/tasks': typeof TasksRoute
   '/tonconnect-manifest.json': typeof TonconnectManifestDotjsonRoute
   '/wallet': typeof WalletRoute
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/refer'
+    | '/servers'
     | '/tasks'
     | '/tonconnect-manifest.json'
     | '/wallet'
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/refer'
+    | '/servers'
     | '/tasks'
     | '/tonconnect-manifest.json'
     | '/wallet'
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/refer'
+    | '/servers'
     | '/tasks'
     | '/tonconnect-manifest.json'
     | '/wallet'
@@ -104,6 +116,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ReferRoute: typeof ReferRoute
+  ServersRoute: typeof ServersRoute
   TasksRoute: typeof TasksRoute
   TonconnectManifestDotjsonRoute: typeof TonconnectManifestDotjsonRoute
   WalletRoute: typeof WalletRoute
@@ -124,6 +137,13 @@ declare module '@tanstack/react-router' {
       path: '/refer'
       fullPath: '/refer'
       preLoaderRoute: typeof ReferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servers': {
+      id: '/servers'
+      path: '/servers'
+      fullPath: '/servers'
+      preLoaderRoute: typeof ServersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tasks': {
@@ -160,6 +180,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ReferRoute: ReferRoute,
+  ServersRoute: ServersRoute,
   TasksRoute: TasksRoute,
   TonconnectManifestDotjsonRoute: TonconnectManifestDotjsonRoute,
   WalletRoute: WalletRoute,
