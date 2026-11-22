@@ -97,17 +97,27 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         const firstName = message?.from?.first_name ?? "";
 
         if (/^\/(start|help)\b/i.test(text)) {
-          await sendWelcome(token, chatId, firstName, parseStartParam(text));
+          try {
+            await sendWelcome(token, chatId, firstName, parseStartParam(text));
+          } catch (error) {
+            console.error(String(error));
+            return Response.json({ ok: true, delivered: false });
+          }
           return Response.json({ ok: true });
         }
 
         const hint = buildHintMessage();
-        await callTelegram(token, "sendMessage", {
-          chat_id: chatId,
-          text: hint.text,
-          parse_mode: "HTML",
-          reply_markup: { inline_keyboard: hint.keyboard },
-        });
+        try {
+          await callTelegram(token, "sendMessage", {
+            chat_id: chatId,
+            text: hint.text,
+            parse_mode: "HTML",
+            reply_markup: { inline_keyboard: hint.keyboard },
+          });
+        } catch (error) {
+          console.error(String(error));
+          return Response.json({ ok: true, delivered: false });
+        }
         return Response.json({ ok: true });
       },
     },
