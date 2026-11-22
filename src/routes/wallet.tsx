@@ -70,16 +70,16 @@ function WalletPage() {
     <AppScreen>
       <UserHeader balance={state.coins} />
 
-      <h1 className="mt-8 text-center text-4xl font-extrabold tracking-tight">Wallet</h1>
+      <header className="page-heading" data-enter><h1>Wallet</h1></header>
 
-      <section className="bg-top-glow mt-6 rounded-3xl border border-border bg-card px-5 py-7 text-center">
+      <section className="wallet-balance" data-enter>
         <p className="text-sm font-semibold tracking-[0.2em] text-muted-foreground">WITHDRAWABLE</p>
-        <p className="mt-2 text-5xl font-extrabold tracking-tight tabular-nums">
+        <p className="mt-2 text-5xl font-extrabold tracking-normal tabular-nums">
           {state.gram.toFixed(3)} <span className="text-symbol-gradient">GRAM</span>
         </p>
         <p className="mt-2 text-lg font-semibold text-success">≈ {formatUsd(gramUsd)} USD</p>
 
-        <button
+        <Button
           type="button"
           onClick={() => {
             haptic("medium");
@@ -88,11 +88,11 @@ function WalletPage() {
           className="mt-6 flex h-16 w-full items-center justify-center gap-2 rounded-full bg-peach-gradient text-lg font-bold text-primary-foreground shadow-peach transition active:scale-[0.98]"
         >
           <ArrowUp className="h-5 w-5" /> Withdraw GRAM
-        </button>
+        </Button>
         <p className="mt-3 text-sm text-muted-foreground">GEMSTON or GRAM · no minimum · anytime</p>
       </section>
 
-      <section className="mt-4 flex items-center gap-4 rounded-3xl border border-gold-border bg-card p-5">
+      <section className="wallet-token flex items-center gap-4" data-enter>
         <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-background ring-1 ring-border">
           <GramMark className="h-6 w-6 text-peach" />
         </span>
@@ -103,19 +103,19 @@ function WalletPage() {
           </p>
           <p className="text-sm text-success">≈ {formatUsd(coinsUsd)}</p>
         </div>
-        <button
+        <Button
           type="button"
           onClick={() => {
             haptic("light");
             setSheet("convert");
           }}
-          className="flex h-12 shrink-0 items-center gap-2 rounded-full bg-foreground px-5 font-bold text-background transition active:scale-95"
+          variant="outline" className="flex h-11 shrink-0 items-center gap-2 rounded-full px-5 font-medium"
         >
           <ArrowDownUp className="h-4 w-4" /> Convert
-        </button>
+        </Button>
       </section>
 
-      <section className="mt-4 rounded-3xl border border-border bg-card p-5">
+      <section className="wallet-market" data-enter>
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-background ring-1 ring-border">
             <GramMark className="h-4 w-4 text-foreground" />
@@ -141,7 +141,7 @@ function WalletPage() {
         </p>
       </section>
 
-      <section className="mt-4 flex items-center gap-4 rounded-3xl border border-border bg-card p-4">
+      <section className="wallet-connection flex items-center gap-4" data-enter>
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
           <Wallet className="h-5 w-5" />
         </span>
@@ -151,18 +151,18 @@ function WalletPage() {
             {address ? shortAddress(address) : "Not connected"}
           </p>
         </div>
-        <button
+        <Button
           type="button"
           onClick={() => (address ? tonConnectUI.disconnect() : tonConnectUI.openModal())}
-          className="flex shrink-0 items-center gap-1 font-bold text-accent"
+          variant="ghost" className="flex shrink-0 items-center gap-1 font-medium text-accent"
         >
           {address ? "Disconnect" : "Connect"} <ChevronRight className="h-4 w-4" />
-        </button>
+        </Button>
       </section>
 
       <p className="mx-auto mt-6 flex max-w-xs items-start gap-2 text-center text-sm text-muted-foreground">
         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
-        We only ever ask for a public address. Never share a seed phrase or private key with anyone, including us.
+        Never share your seed phrase or private key.
       </p>
 
       <ConvertSheet
@@ -216,17 +216,18 @@ function Sheet({
 }) {
   return (
     <Drawer open={open} onOpenChange={(o) => !o && onClose()} shouldScaleBackground={false}>
-      <DrawerContent className="mx-auto max-w-md rounded-t-[2rem] border-border bg-card px-5 pb-8">
+      <DrawerContent className="mx-auto max-h-[90dvh] max-w-md overflow-y-auto rounded-t-xl border-border bg-popover px-5 pb-8">
         <div className="mt-4 flex items-center justify-between">
           <DrawerTitle className="text-2xl font-extrabold">{title}</DrawerTitle>
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={onClose}
             aria-label="Close"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground"
           >
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
         {children}
       </DrawerContent>
@@ -255,12 +256,12 @@ function ConvertSheet({
 
   return (
     <Sheet open={open} onClose={onClose} title={`Convert ${COIN_SYMBOL}`}>
-      <div className="mt-6 rounded-2xl border border-border bg-background p-4">
+      <div className="mt-6 rounded-lg border border-border bg-background p-4">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>You pay</span>
-          <button type="button" className="font-bold text-accent" onClick={() => setAmount(String(coins))}>
+          <Button type="button" variant="link" className="h-auto p-0 font-medium text-accent" onClick={() => setAmount(String(coins))}>
             Max {coins.toFixed(2)}
-          </button>
+          </Button>
         </div>
         <div className="mt-2 flex items-center gap-3">
           <input
@@ -278,14 +279,14 @@ function ConvertSheet({
           <ArrowDownUp className="h-4 w-4" />
         </span>
       </div>
-      <div className="rounded-2xl border border-border bg-background p-4">
+      <div className="rounded-lg border border-border bg-background p-4">
         <p className="text-sm text-muted-foreground">You receive</p>
         <div className="mt-2 flex items-center gap-3">
           <span className="flex-1 text-3xl font-extrabold tabular-nums">{receive.toFixed(4)}</span>
           <span className="font-bold">GRAM</span>
         </div>
       </div>
-      <button
+      <Button
         type="button"
         disabled={value <= 0 || receive <= 0}
         onClick={() => {
@@ -297,7 +298,7 @@ function ConvertSheet({
         className="mt-6 flex h-14 w-full items-center justify-center rounded-full bg-peach-gradient text-lg font-bold text-primary-foreground shadow-peach transition active:scale-[0.98] disabled:opacity-50"
       >
         Convert to GRAM
-      </button>
+      </Button>
       <p className="mt-3 text-center text-xs text-muted-foreground">Live STON.fi rate · no hidden fees</p>
     </Sheet>
   );
@@ -359,9 +360,9 @@ function WithdrawSheet({
         <StepBody
           icon={<Wallet className="h-6 w-6" />}
           title={`Pay the ${WITHDRAWAL_FEE} GRAM fee`}
-          text="A one-time withdrawal fee, paid from your TON wallet. On-chain payouts are not enabled yet."
+          text="One-time TON wallet payment. Real payouts are not enabled yet."
         >
-          <div className="mt-5 rounded-2xl border border-border bg-background p-4 text-left text-sm">
+          <div className="mt-5 rounded-lg border border-border bg-background p-4 text-left text-sm">
             <Line label="Fee" value={`${WITHDRAWAL_FEE} GRAM`} />
             <Line label="Wallet" value={address ? shortAddress(address) : "Not connected"} />
           </div>
@@ -382,9 +383,9 @@ function WithdrawSheet({
         <StepBody
           icon={<Users className="h-6 w-6" />}
           title={`Invite ${WITHDRAWAL_REFERRALS} friends or buy a server`}
-          text="Choose either option. A server purchase replaces the referral condition only."
+          text="Choose one option. The withdrawal fee still applies."
         >
-          <div className="mt-5 rounded-2xl border border-border bg-background p-5">
+          <div className="mt-5 rounded-lg border border-border bg-background p-5">
             <p className="text-xs font-semibold tracking-[0.2em] text-muted-foreground">INVITES</p>
             <p className="mt-1 text-4xl font-extrabold tabular-nums">
               {referrals} <span className="text-muted-foreground">/ {WITHDRAWAL_REFERRALS}</span>
@@ -414,7 +415,7 @@ function WithdrawSheet({
         <StepBody
           icon={<ArrowDownUp className="h-6 w-6" />}
           title={`No ${asset} balance yet`}
-          text="Any positive balance is eligible after completing the conditions. There is no minimum or withdrawal schedule."
+          text="Mine first. No minimum withdrawal."
         >
           <Link to="/" onClick={onClose} className="mt-5 block font-bold text-accent">Back to mining</Link>
         </StepBody>
@@ -424,7 +425,7 @@ function WithdrawSheet({
         <StepBody
           icon={<Check className="h-6 w-6" />}
           title="Conditions completed"
-          text={`${amount.toFixed(3)} ${asset} · No withdrawal schedule. On-chain payouts require verified balances and a funded payout wallet, which are not connected yet.`}
+          text={`${amount.toFixed(3)} ${asset}. Real payouts are not enabled yet.`}
         >
           <PrimaryButton disabled onClick={() => {}}>Payouts not enabled yet</PrimaryButton>
         </StepBody>
@@ -446,7 +447,7 @@ function StepBody({
 }) {
   return (
     <div className="mt-6 text-center">
-      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-muted text-peach">{icon}</span>
+      <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-muted text-peach">{icon}</span>
       <p className="mt-5 text-2xl font-extrabold">{title}</p>
       <p className="mx-auto mt-2 max-w-xs text-muted-foreground">{text}</p>
       {children}
@@ -473,13 +474,13 @@ function PrimaryButton({
   children: ReactNode;
 }) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
       disabled={disabled}
       className="mt-5 flex h-14 w-full items-center justify-center gap-1 rounded-full bg-peach-gradient text-lg font-bold text-primary-foreground shadow-peach transition active:scale-[0.98] disabled:opacity-60"
     >
       {children}
-    </button>
+    </Button>
   );
 }

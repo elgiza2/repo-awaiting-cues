@@ -1,7 +1,10 @@
 # Roadmap
 
-- [ ] Apply supplied glass/slab design: awaiting choice between restyling GEMSTON and replacing the home page with Strata AI
-- [ ] Verify chosen design on desktop/mobile, menu and reduced motion
+- [x] Restyle all GEMSTON pages with supplied glass/slab design, preserving existing functionality
+- [x] Remove top application name/icon and menu, reduce text, prioritize balances and actions
+- [x] Fix wallet manifest: private -dev host returned 403; published manifest and icon return 200, wallet picker opens and withdrawal restores on close
+- [x] Verify simplified design at 434×537, 360×740 and 1440×900; navigation, welcome claim, mining readback, conversion, server selection, bot-link copying and reduced motion; 30 tests pass
+- [ ] Verify completed wallet connection and real transaction on a wallet device (requires wallet-owner approval; browser verified picker and handoff only)
 
 - [x] Public invite/share/post links use @Gemystabot; webhook passes the current Telegram user's id into personal invite buttons
 - [x] Verify bot referral-link correction: 28 tests passed and copied invite opens @Gemystabot; publish requested after saving

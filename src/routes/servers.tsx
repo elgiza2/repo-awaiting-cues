@@ -58,7 +58,7 @@ function ServersPage() {
 
   return <AppScreen>
     <UserHeader balance={state.coins} />
-    <header className="mt-8">
+    <header className="page-heading" data-enter>
       <div className="flex items-center justify-between gap-3"><h1 className="text-4xl font-extrabold">Servers</h1><Cpu className="h-7 w-7 text-peach" /></div>
       <p className="mt-2 text-sm text-muted-foreground">90 rigs · from 1 TON</p>
     </header>
@@ -66,14 +66,14 @@ function ServersPage() {
       <div><p className="text-xs text-muted-foreground">MY SERVERS</p><p className="text-2xl font-extrabold">{state.serverPurchases.length}</p></div>
       <div className="text-right"><p className="text-xs text-muted-foreground">EXTRA / 2H SESSION</p><p className="font-bold text-peach">+{serverSessionReward(state)} GEMSTON</p></div>
     </div>
-    <p className="mt-4 text-sm text-muted-foreground">A purchased server replaces the 3-friend condition. The 0.15 GRAM withdrawal fee still applies.</p>
-    <div className="mt-5 grid grid-cols-2 gap-3">
-      {SERVERS.slice(page * 9, page * 9 + 9).map((server) => <article key={server.id} className="overflow-hidden rounded-lg border border-border bg-card">
+    <p className="mt-4 text-xs text-muted-foreground">Replaces 3 invites. The 0.15 GRAM fee still applies.</p>
+    <div className="server-grid mt-5 grid" data-enter>
+      {SERVERS.slice(page * 9, page * 9 + 9).map((server) => <article key={server.id} className="server-card overflow-hidden rounded-lg border border-border bg-card">
         <img src={serverImages[server.imageIndex]?.url} alt={server.name} className="aspect-square w-full object-cover" loading="lazy" />
         <div className="p-3">
           <h2 className="font-bold">{server.name}</h2>
           <p className="mt-1 text-xs text-success">+{server.sessionReward} GEMSTON / 2h</p>
-          <p className="mt-3 text-lg font-extrabold">{server.priceTon} TON</p>
+          <p className="server-price mt-3">{server.priceTon} TON</p>
           <Button className="mt-3 w-full" variant={owned(server.id) ? "secondary" : "default"} disabled={owned(server.id)} onClick={() => { setSelectedId(server.id); setSubmitted(false); setError(null); }}>
             {owned(server.id) ? <><Check /> Submitted</> : <><Wallet /> Buy</>}
           </Button>
@@ -85,7 +85,7 @@ function ServersPage() {
       <span className="text-sm text-muted-foreground">{page + 1} / 10</span>
       <Button variant="outline" size="icon" aria-label="Next servers" disabled={page === 9} onClick={() => setPage((p) => p + 1)}><ChevronRight /></Button>
     </div>
-    <p className="mt-5 text-xs text-muted-foreground">Wallet submissions are saved on this device. Payment verification and on-chain payouts are not enabled yet. Server rewards are in-app balances, not guaranteed returns.</p>
+    <p className="mt-5 text-xs text-muted-foreground">Purchases saved locally, not verified. Real payouts unavailable; rewards are not guaranteed returns.</p>
     <Dialog open={selected != null && !modalOpen} onOpenChange={(open) => { if (!open && !busy) setSelectedId(null); }}>
       <DialogContent className="max-h-[90dvh] w-[calc(100%-2rem)] max-w-sm overflow-y-auto" onInteractOutside={(event) => { if (busy) event.preventDefault(); }}>
         <DialogTitle>{submitted ? "Transaction submitted" : selected?.name}</DialogTitle>

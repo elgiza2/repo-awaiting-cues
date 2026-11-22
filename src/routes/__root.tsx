@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" },
-      { name: "theme-color", content: "#0b0a09" },
+      { name: "theme-color", content: "#0d0c11" },
       { title: "GEMSTON Miner" },
       { name: "description", content: "Mine GEMSTON on Telegram and cash out in GRAM." },
       { property: "og:title", content: "GEMSTON Miner" },
@@ -98,12 +98,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
-      },
     ],
     scripts: [{ src: "https://telegram.org/js/telegram-web-app.js?59" }],
   }),

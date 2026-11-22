@@ -13,16 +13,16 @@ const items: { to: "/" | "/tasks" | "/refer" | "/wallet" | "/servers"; label: st
 
 export function BottomNav() {
   return (
-    <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 backdrop-blur-xl">
+    <nav aria-label="Quick navigation" className="bottom-nav pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 backdrop-blur-xl">
       <ul className="mx-auto grid max-w-md grid-cols-5">
         {items.map((item) => (
           <li key={item.to}>
             <Link
               to={item.to}
-              className="group relative flex flex-col items-center gap-1 pt-3 pb-1 text-xs font-semibold text-muted-foreground transition-colors data-[status=active]:text-peach"
+              className="group relative flex flex-col items-center gap-1 pt-3 pb-1 text-xs font-semibold text-muted-foreground transition-colors data-[status=active]:text-accent"
               activeOptions={{ exact: true }}
             >
-              <span className="absolute inset-x-6 top-0 h-px bg-peach opacity-0 shadow-peach transition-opacity group-data-[status=active]:opacity-100" />
+              <span className="absolute inset-x-6 top-0 h-px bg-accent opacity-0 transition-opacity group-data-[status=active]:opacity-100" />
               <span className="relative">
                 {item.icon}
                 {item.dot && (

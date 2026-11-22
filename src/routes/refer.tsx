@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Clock, Copy, Gift, Share, Users } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 import { AppScreen } from "@/components/gram/AppScreen";
 import { GramMark } from "@/components/gram/GramMark";
 import { UserHeader } from "@/components/gram/UserHeader";
@@ -60,60 +61,54 @@ function ReferPage() {
     <AppScreen>
       <UserHeader balance={state.coins} />
 
-      <section className="mt-8 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight">Invite friends</h1>
-        <p className="mt-3 text-muted-foreground">Your link works forever. There is no cap.</p>
+      <section className="page-heading" data-enter>
+        <h1 className="text-4xl font-extrabold tracking-normal">Invite friends</h1>
       </section>
 
-      <section className="bg-top-glow mt-6 rounded-3xl border border-gold-border bg-card px-6 py-8 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/15 text-accent">
-          <Gift className="h-7 w-7" />
-        </span>
-        <p className="mt-5 text-sm font-semibold tracking-[0.2em] text-muted-foreground">FOR EVERY FRIEND</p>
-        <p className="mt-2 text-4xl font-extrabold tracking-tight">
-          +{perFriend.toFixed(1)}
-        </p>
-        <p className="text-3xl font-extrabold tracking-tight text-accent">{COIN_SYMBOL}</p>
-        <p className="mt-3 text-lg font-semibold text-success">≈ ${REFERRAL_USD} per referral</p>
+      <section className="referral-reward" data-enter>
+        <span className="flex h-14 w-14 items-center justify-center rounded-lg bg-accent/10 text-accent"><Gift className="h-6 w-6" /></span>
+        <div><p className="mb-2 text-xs text-muted-foreground">FOR EVERY FRIEND</p><p className="reward-number">+{perFriend.toFixed(1)} <span className="text-accent text-xl">{COIN_SYMBOL}</span></p></div>
+        <p className="font-medium text-success">≈ ${REFERRAL_USD} per referral</p>
       </section>
 
-      <section className="mt-4 grid grid-cols-3 gap-3">
+      <section className="referral-stats grid grid-cols-3 gap-3" data-enter>
         <Stat icon={<Users className="h-5 w-5" />} value={state.referrals} label="FRIENDS" highlight />
         <Stat icon={<Clock className="h-5 w-5" />} value={0} label="PENDING" />
         <Stat icon={<GramMark className="h-5 w-5" />} value={Number(earned.toFixed(1))} label="EARNED" />
       </section>
 
-      <section className="mt-4 rounded-3xl border border-border bg-card p-5">
+      <section className="invite-panel" data-enter>
         <p className="text-sm font-semibold tracking-wide text-muted-foreground">YOUR INVITE LINK</p>
         <div className="mt-3 truncate rounded-xl border border-border bg-background px-4 py-3.5 font-mono text-sm">
           {link}
         </div>
         <div className="mt-3 grid grid-cols-[2fr_3fr] gap-3">
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={copy}
             className="flex h-14 items-center justify-center gap-2 rounded-xl border border-border bg-background font-bold transition active:scale-95"
           >
             {copied ? <Check className="h-5 w-5 text-success" /> : <Copy className="h-5 w-5" />}
             {copied ? "Copied" : "Copy"}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={share}
             className="flex h-14 items-center justify-center gap-2 rounded-xl bg-peach-gradient font-bold text-primary-foreground shadow-peach transition active:scale-95"
           >
             <Share className="h-5 w-5" /> Share invite
-          </button>
+          </Button>
         </div>
       </section>
 
-      <section className="mt-4 rounded-3xl border border-border bg-card p-5">
+      <section className="steps-panel" data-enter>
         <p className="text-sm font-semibold tracking-wide text-muted-foreground">HOW IT WORKS</p>
         <ol className="mt-4 space-y-4">
           {[
-            "Send your link to a friend.",
-            "They open the app and join our community.",
-            `Once both are done, your $${REFERRAL_USD} in ${COIN_SYMBOL} lands.`,
+            "Share your link.",
+            "Your friend joins.",
+            `Earn $${REFERRAL_USD} in ${COIN_SYMBOL}.`,
           ].map((step, i) => (
             <li key={step} className="flex items-start gap-3">
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-bold">
@@ -140,7 +135,7 @@ function Stat({
   highlight?: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-border bg-card px-2 py-4">
+    <div className="flex flex-col items-center rounded-lg border border-border bg-card px-2 py-4">
       <span
         className={
           highlight

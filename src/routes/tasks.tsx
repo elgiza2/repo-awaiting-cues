@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Rocket, Send } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { AppScreen } from "@/components/gram/AppScreen";
 import { GramMark } from "@/components/gram/GramMark";
 import { UserHeader } from "@/components/gram/UserHeader";
@@ -36,14 +37,14 @@ function TasksPage() {
     <AppScreen>
       <UserHeader balance={state.coins} />
 
-      <section className="mt-8 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight">Tasks</h1>
+      <section className="page-heading" data-enter>
+        <h1 className="text-4xl font-extrabold tracking-normal">Tasks</h1>
         <p className="mt-3 text-muted-foreground">
-          {left === 0 ? "All done. New tasks drop daily." : `${left} task${left > 1 ? "s" : ""} left. Rewards credit instantly.`}
+          {left === 0 ? "All completed" : `${left} available · $${TASK_USD} each`}
         </p>
       </section>
 
-      <ul className="mt-6 space-y-3">
+      <ul className="task-list" data-enter>
         {TASKS.map((task) => (
           <TaskCard
             key={task.id}
@@ -55,9 +56,6 @@ function TasksPage() {
         ))}
       </ul>
 
-      <p className="mx-auto mt-6 max-w-xs text-center text-sm text-muted-foreground">
-        Membership is verified on our side. Leaving a channel after claiming may reverse the reward.
-      </p>
     </AppScreen>
   );
 }
@@ -96,7 +94,7 @@ function TaskCard({
   };
 
   return (
-    <li className="flex items-center gap-3 rounded-2xl border border-gold-border bg-card p-4">
+    <li className="task-card flex items-center gap-3">
       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-telegram/15 ring-1 ring-telegram/30">
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-telegram text-telegram-foreground">
           {task.kind === "channel" ? <Send className="h-4 w-4 -translate-x-px" /> : <Rocket className="h-4 w-4" />}
@@ -105,7 +103,7 @@ function TaskCard({
       <div className="min-w-0 flex-1">
         <p className="truncate font-bold">{task.title}</p>
         <p className="truncate text-sm text-muted-foreground">{task.handle}</p>
-        <div className="mt-2 flex items-center gap-2 text-sm">
+        <div className="task-reward mt-2 flex items-center gap-2 text-sm">
           <GramMark className="h-4 w-4 text-foreground" />
           <span className="whitespace-nowrap rounded-full bg-muted px-2.5 py-0.5 font-bold">
             +{reward.toFixed(1)} {COIN_SYMBOL}
@@ -113,15 +111,15 @@ function TaskCard({
           <span className="whitespace-nowrap text-muted-foreground">≈ ${TASK_USD}</span>
         </div>
       </div>
-      <button
+      <Button
         type="button"
         onClick={onClick}
         disabled={done || phase === "checking" || reward <= 0}
-        className="h-11 shrink-0 rounded-full bg-foreground px-4 font-bold text-background transition active:scale-95 disabled:bg-muted disabled:text-muted-foreground data-[ready=true]:bg-peach-gradient data-[ready=true]:text-primary-foreground"
+        className="h-10 shrink-0 rounded-full px-4 font-medium disabled:bg-muted disabled:text-muted-foreground"
         data-ready={phase === "ready" && !done}
       >
         {done ? <Check className="h-5 w-5" /> : phase === "checking" ? "Checking…" : phase === "ready" ? "Claim" : "Start"}
-      </button>
+      </Button>
     </li>
   );
 }
