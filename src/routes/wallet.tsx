@@ -372,7 +372,7 @@ function WithdrawSheet({
         <StepBody
           icon={<Wallet className="h-6 w-6" />}
           title={`Pay the ${WITHDRAWAL_FEE} GRAM fee`}
-          text="One-time TON wallet payment. Real payouts are not enabled yet."
+          text="One-time TON wallet payment."
         >
           <div className="mt-5 rounded-lg border border-border bg-background p-4 text-left text-sm">
             <Line label="Fee" value={`${WITHDRAWAL_FEE} GRAM`} />
@@ -461,7 +461,7 @@ function WithdrawSheet({
         <StepBody
           icon={<Check className="h-6 w-6" />}
           title="Conditions completed"
-          text={`${amount.toFixed(3)} ${asset}. Real payouts are not enabled yet.`}
+          text={`${amount.toFixed(3)} ${asset}`}
         >
           <PrimaryButton disabled onClick={() => {}}>Payouts not enabled yet</PrimaryButton>
         </StepBody>
