@@ -3,7 +3,7 @@
  * Kept as pure data so the wording can be tested without a Telegram call.
  */
 
-import { COMMUNITY_URL, MINI_APP_URL } from "./bot";
+import { BOT_URL, COMMUNITY_URL, MINI_APP_URL, inviteLink } from "./bot";
 import welcomeAsset from "@/assets/gemston-welcome.png.asset.json";
 import rewardsAsset from "@/assets/gemston-rewards.png.asset.json";
 import {
@@ -53,7 +53,7 @@ export const parseStartParam = (text: string): number | null => {
 const escapeHtml = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-export const buildStartMessage = (firstName: string, referrerId: number | null): StartMessage => {
+export const buildStartMessage = (firstName: string, referrerId: number | null, userId: number | null = null): StartMessage => {
   const name = firstName.trim() ? `, ${escapeHtml(firstName.trim())}` : "";
 
   const lines = [
@@ -79,12 +79,12 @@ export const buildStartMessage = (firstName: string, referrerId: number | null):
     keyboard: [
       [{ text: "Open the app", style: "success", icon_custom_emoji_id: major.launch[0], web_app: { url: MINI_APP_URL } }],
       [{ text: "Join the community", style: "primary", icon_custom_emoji_id: major.friends[0], url: COMMUNITY_URL }],
-      [{ text: "Invite friends", style: "primary", icon_custom_emoji_id: major.coin[0], url: `${MINI_APP_URL}/refer` }],
+      [{ text: "Invite friends", style: "primary", icon_custom_emoji_id: major.coin[0], url: `https://t.me/share/url?url=${encodeURIComponent(inviteLink(userId))}` }],
     ],
     fallbackKeyboard: [
-      [{ text: "🚀 Open the app", style: "success", url: MINI_APP_URL }],
+      [{ text: "🚀 Open the bot", style: "success", url: BOT_URL }],
       [{ text: "🤝 Join the community", style: "primary", url: COMMUNITY_URL }],
-      [{ text: "🪙 Invite friends", style: "primary", url: `${MINI_APP_URL}/refer` }],
+      [{ text: "🪙 Invite friends", style: "primary", url: `https://t.me/share/url?url=${encodeURIComponent(inviteLink(userId))}` }],
     ],
   };
 };
@@ -98,10 +98,10 @@ export const buildHintMessage = (): { text: string; keyboard: BotKeyboard } => (
 export const channelPosts = [
   {
     photo: new URL(welcomeAsset.url, MINI_APP_URL).href,
-    caption: `<b>💎 Welcome to GEMSTON!\n\nClaim your $7 welcome gift in GEMSTON and start your first mining session.\n\nMining and rewards are credited in GEMSTON at live STON.fi prices.\n\nOpen the app: ${MINI_APP_URL}\nCommunity: ${COMMUNITY_URL}\n\nIn-app rewards only for now; on-chain withdrawals are not enabled yet.</b>`,
+    caption: `<b>💎 Welcome to GEMSTON!\n\nClaim your $7 welcome gift in GEMSTON and start your first mining session.\n\nMining and rewards are credited in GEMSTON at live STON.fi prices.\n\nOpen the bot: ${BOT_URL}\nCommunity: ${COMMUNITY_URL}\n\nIn-app rewards only for now; on-chain withdrawals are not enabled yet.</b>`,
   },
   {
     photo: new URL(rewardsAsset.url, MINI_APP_URL).href,
-    caption: `<b>🚀 Grow your GEMSTON balance\n\n✔️ Complete a task: $3 in GEMSTON\n🤝 Invite a friend: $4 in GEMSTON\n\nCommunity task: ${COMMUNITY_URL}\nTalon task: https://t.me/Talonminibot?startapp=r6657246146\n\nFind your personal invite link in the app.\n${MINI_APP_URL}/refer\n\nRewards use live prices. Task/referral verification and on-chain payouts are not enabled yet.</b>`,
+    caption: `<b>🚀 Grow your GEMSTON balance\n\n✔️ Complete a task: $3 in GEMSTON\n🤝 Invite a friend: $4 in GEMSTON\n\nCommunity task: ${COMMUNITY_URL}\nTalon task: https://t.me/Talonminibot?startapp=r6657246146\n\nOpen the bot to get your personal invite link.\n${BOT_URL}\n\nRewards use live prices. Task/referral verification and on-chain payouts are not enabled yet.</b>`,
   },
 ];

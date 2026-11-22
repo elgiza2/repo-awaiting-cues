@@ -1,4 +1,5 @@
 export const BOT_USERNAME = "Gemystabot";
+export const BOT_URL = `https://t.me/${BOT_USERNAME}`;
 export const COMMUNITY_URL = "https://t.me/gemstoe";
 
 /**
@@ -7,6 +8,6 @@ export const COMMUNITY_URL = "https://t.me/gemstoe";
  */
 export const MINI_APP_URL = "https://repo-awaiting-cues.lovable.app";
 
-/** Opens the bot's main Mini App with the inviter's id as start param. */
+/** Opens the bot chat with the inviter's referral code for /start. */
 export const inviteLink = (userId: number | null) =>
-  `https://t.me/${BOT_USERNAME}?startapp=${userId != null ? `r${userId}` : "gram"}`;
+  `${BOT_URL}?start=${userId != null ? `r${userId}` : "gram"}`;
