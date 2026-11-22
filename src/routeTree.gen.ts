@@ -14,6 +14,7 @@ import { Route as ReferRouteImport } from './routes/refer'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as TonconnectManifestDotjsonRouteImport } from './routes/tonconnect-manifest[.]json'
 import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,6 +42,12 @@ const WalletRoute = WalletRouteImport.update({
   path: '/wallet',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTelegramWebhookRoute =
+  ApiPublicTelegramWebhookRouteImport.update({
+    id: '/api/public/telegram/webhook',
+    path: '/api/public/telegram/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -48,6 +55,7 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof TasksRoute
   '/tonconnect-manifest.json': typeof TonconnectManifestDotjsonRoute
   '/wallet': typeof WalletRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -55,6 +63,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof TasksRoute
   '/tonconnect-manifest.json': typeof TonconnectManifestDotjsonRoute
   '/wallet': typeof WalletRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -63,12 +72,25 @@ export interface FileRoutesById {
   '/tasks': typeof TasksRoute
   '/tonconnect-manifest.json': typeof TonconnectManifestDotjsonRoute
   '/wallet': typeof WalletRoute
+  '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/refer' | '/tasks' | '/tonconnect-manifest.json' | '/wallet'
+  fullPaths:
+    | '/'
+    | '/refer'
+    | '/tasks'
+    | '/tonconnect-manifest.json'
+    | '/wallet'
+    | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/refer' | '/tasks' | '/tonconnect-manifest.json' | '/wallet'
+  to:
+    | '/'
+    | '/refer'
+    | '/tasks'
+    | '/tonconnect-manifest.json'
+    | '/wallet'
+    | '/api/public/telegram/webhook'
   id:
     | '__root__'
     | '/'
@@ -76,6 +98,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/tonconnect-manifest.json'
     | '/wallet'
+    | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -84,6 +107,7 @@ export interface RootRouteChildren {
   TasksRoute: typeof TasksRoute
   TonconnectManifestDotjsonRoute: typeof TonconnectManifestDotjsonRoute
   WalletRoute: typeof WalletRoute
+  ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -123,6 +147,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/telegram/webhook': {
+      id: '/api/public/telegram/webhook'
+      path: '/api/public/telegram/webhook'
+      fullPath: '/api/public/telegram/webhook'
+      preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -132,6 +163,7 @@ const rootRouteChildren: RootRouteChildren = {
   TasksRoute: TasksRoute,
   TonconnectManifestDotjsonRoute: TonconnectManifestDotjsonRoute,
   WalletRoute: WalletRoute,
+  ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
