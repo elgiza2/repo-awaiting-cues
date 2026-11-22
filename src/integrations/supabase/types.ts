@@ -1193,6 +1193,140 @@ export type Database = {
           },
         ]
       }
+      gemston_players: {
+        Row: {
+          created_at: string
+          first_name: string
+          referrer_id: number | null
+          telegram_id: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string
+          referrer_id?: number | null
+          telegram_id: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          first_name?: string
+          referrer_id?: number | null
+          telegram_id?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gemston_players_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "gemston_players"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
+      gemston_referral_rewards: {
+        Row: {
+          coin_price_usd: number | null
+          created_at: string
+          credited_at: string | null
+          gemston_amount: number | null
+          invitee_id: number
+          inviter_id: number
+          reward_usd: number
+          updated_at: string
+          withdrawal_id: string
+        }
+        Insert: {
+          coin_price_usd?: number | null
+          created_at?: string
+          credited_at?: string | null
+          gemston_amount?: number | null
+          invitee_id: number
+          inviter_id: number
+          reward_usd?: number
+          updated_at?: string
+          withdrawal_id: string
+        }
+        Update: {
+          coin_price_usd?: number | null
+          created_at?: string
+          credited_at?: string | null
+          gemston_amount?: number | null
+          invitee_id?: number
+          inviter_id?: number
+          reward_usd?: number
+          updated_at?: string
+          withdrawal_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gemston_referral_rewards_invitee_id_fkey"
+            columns: ["invitee_id"]
+            isOneToOne: true
+            referencedRelation: "gemston_players"
+            referencedColumns: ["telegram_id"]
+          },
+          {
+            foreignKeyName: "gemston_referral_rewards_inviter_id_fkey"
+            columns: ["inviter_id"]
+            isOneToOne: false
+            referencedRelation: "gemston_players"
+            referencedColumns: ["telegram_id"]
+          },
+          {
+            foreignKeyName: "gemston_referral_rewards_withdrawal_id_fkey"
+            columns: ["withdrawal_id"]
+            isOneToOne: true
+            referencedRelation: "gemston_verified_withdrawals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gemston_verified_withdrawals: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          destination: string
+          id: string
+          telegram_id: number
+          transaction_hash: string
+          updated_at: string
+          verified_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency: string
+          destination: string
+          id?: string
+          telegram_id: number
+          transaction_hash: string
+          updated_at?: string
+          verified_at: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          destination?: string
+          id?: string
+          telegram_id?: number
+          transaction_hash?: string
+          updated_at?: string
+          verified_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gemston_verified_withdrawals_telegram_id_fkey"
+            columns: ["telegram_id"]
+            isOneToOne: false
+            referencedRelation: "gemston_players"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
       mail_accounts: {
         Row: {
           composio_account_id: string | null
@@ -3051,6 +3185,14 @@ export type Database = {
         }[]
       }
       consume_ai_action: { Args: { p_kind?: string }; Returns: Json }
+      gemston_referral_summary: {
+        Args: { p_coin_price?: number; p_id: number }
+        Returns: Json
+      }
+      gemston_register: {
+        Args: { p_first: string; p_id: number; p_referrer?: number }
+        Returns: undefined
+      }
       provision_user: {
         Args: { _email: string; _name: string; _uid: string }
         Returns: undefined

@@ -4,6 +4,7 @@
  */
 
 import { BOT_URL, COMMUNITY_URL, MINI_APP_URL, inviteLink } from "./bot";
+import { referralId } from "./referrals";
 import welcomeAsset from "@/assets/gemston-welcome.png.asset.json";
 import rewardsAsset from "@/assets/gemston-rewards.png.asset.json";
 import {
@@ -13,6 +14,7 @@ import {
   WELCOME_USD,
   WITHDRAWAL_FEE,
   WITHDRAWAL_REFERRALS,
+  WITHDRAWAL_ADS,
 } from "./mining";
 
 export type BotButton = ({ text: string; web_app: { url: string } } | { text: string; url: string }) & {
@@ -46,8 +48,7 @@ export interface StartMessage {
 /** `/start r123` → 123, `/start` or an unknown payload → null. */
 export const parseStartParam = (text: string): number | null => {
   const payload = text.trim().split(/\s+/).slice(1).join(" ");
-  const match = /^r(\d{3,20})$/.exec(payload);
-  return match ? Number(match[1]) : null;
+  return referralId(payload);
 };
 
 const escapeHtml = (value: string) =>
@@ -64,12 +65,12 @@ export const buildStartMessage = (firstName: string, referrerId: number | null, 
     `${emoji("coin")} Mine ${COIN_SYMBOL} · one session runs 2 hours`,
     `${emoji("task")} Complete tasks · $${TASK_USD} each`,
     `${emoji("friends")} Invite friends · $${REFERRAL_USD} each`,
-    `Withdraw ${COIN_SYMBOL} or GRAM anytime · no minimum. Pay the ${WITHDRAWAL_FEE} GRAM fee first, then invite ${WITHDRAWAL_REFERRALS} friends.`,
+    `Withdraw ${COIN_SYMBOL} or GRAM anytime · no minimum. Pay the ${WITHDRAWAL_FEE} GRAM fee, watch ${WITHDRAWAL_ADS} ads, then invite ${WITHDRAWAL_REFERRALS} friends who withdraw (or buy a server).`,
     `In-app rewards at live prices. On-chain payouts are not enabled yet.`,
   ];
 
   if (referrerId != null) {
-    lines.push("", `🤝 You joined through a friend's invite — they earn $${REFERRAL_USD} once you're both active.`);
+    lines.push("", `🤝 You joined through a friend's invite — they earn $${REFERRAL_USD} after your first confirmed withdrawal.`);
   }
 
   lines.push("", "Tap Open the app and start mining.");

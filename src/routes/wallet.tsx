@@ -9,6 +9,7 @@ import { UserHeader } from "@/components/gram/UserHeader";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { useMining } from "@/hooks/use-mining";
+import { useReferrals } from "@/hooks/use-referrals";
 import { formatUsd, pricesQuery } from "@/lib/gram-price";
 import {
   checkWithdrawal,
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/wallet")({
 function WalletPage() {
   const { data: prices } = useSuspenseQuery(pricesQuery);
   const { state, convert, markFeePaid, watchAd } = useMining();
+  const referrals = useReferrals();
   const [tonConnectUI] = useTonConnectUI();
   const address = useTonAddress();
   const [sheet, setSheet] = useState<"convert" | "withdraw" | null>(null);
@@ -182,7 +184,7 @@ function WalletPage() {
         amount={withdrawAsset === "GRAM" ? state.gram : state.coins}
         onAssetChange={setWithdrawAsset}
         feePaid={state.feePaid}
-        referrals={state.referrals}
+        referrals={referrals.data?.qualified ?? 0}
         adsWatched={state.adsWatched}
         onWatchAd={async () => {
           const show = (window as unknown as Record<string, (() => Promise<void>) | undefined>)["show_12324379"];
@@ -463,7 +465,7 @@ function WithdrawSheet({
           title="Conditions completed"
           text={`${amount.toFixed(3)} ${asset}`}
         >
-          <PrimaryButton disabled onClick={() => {}}>Payouts not enabled yet</PrimaryButton>
+          <p role="status" className="mt-4 text-sm text-muted-foreground">Withdrawal service unavailable.</p>
         </StepBody>
       )}
     </Sheet>

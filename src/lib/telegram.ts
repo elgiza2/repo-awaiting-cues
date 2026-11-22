@@ -9,6 +9,7 @@ export interface TgUser {
 }
 
 interface TgWebApp {
+  initData?: string;
   initDataUnsafe?: { user?: TgUser; start_param?: string };
   ready?: () => void;
   expand?: () => void;

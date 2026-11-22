@@ -101,6 +101,17 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
         const text = (message?.text ?? "").trim();
         const firstName = message?.from?.first_name ?? "";
 
+        // Only authenticated private /start updates bind invitations. Repeated deliveries cannot rebind a player.
+        if (message?.chat.type === "private" && message.from?.id === chatId && /^\/start(?:@\w+)?(?:\s|$)/i.test(text)) {
+          try {
+            const { registerTelegramPlayer } = await import("@/lib/referrals.server");
+            await registerTelegramPlayer(chatId, firstName, parseStartParam(text));
+          } catch {
+            // Non-2xx makes Telegram retry instead of silently losing the invitation.
+            return Response.json({ ok: false, error: "Could not register invitation" }, { status: 503 });
+          }
+        }
+
         if (/^\/(start|help)\b/i.test(text)) {
           try {
             await sendWelcome(token, chatId, firstName, parseStartParam(text), message?.from?.id ?? null);

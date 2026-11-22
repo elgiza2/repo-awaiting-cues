@@ -66,7 +66,6 @@ function ServersPage() {
       <div><p className="text-xs text-muted-foreground">MY SERVERS</p><p className="text-2xl font-extrabold">{state.serverPurchases.length}</p></div>
       <div className="text-right"><p className="text-xs text-muted-foreground">EXTRA / 2H SESSION</p><p className="font-bold text-peach">+{serverSessionReward(state)} GEMSTON</p></div>
     </div>
-    <p className="mt-4 text-xs text-muted-foreground">Replaces 3 invites. The 0.15 GRAM fee still applies.</p>
     <div className="server-grid mt-5 grid" data-enter>
       {SERVERS.slice(page * 9, page * 9 + 9).map((server) => <article key={server.id} className="server-card overflow-hidden rounded-lg border border-border bg-card">
         <img src={serverImages[server.imageIndex]?.url} alt={server.name} className="aspect-square w-full object-cover" loading="lazy" />

@@ -2,8 +2,10 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { useLocation } from "@tanstack/react-router";
 import { BottomNav } from "./BottomNav";
 import { DataSlabs } from "./DataSlabs";
+import { useReferrals } from "@/hooks/use-referrals";
 
 export function AppScreen({ children, home = false }: { children: ReactNode; home?: boolean }) {
+  useReferrals();
   const screen = useRef<HTMLDivElement>(null);
   const location = useLocation();
   useEffect(() => {

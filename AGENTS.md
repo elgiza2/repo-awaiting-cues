@@ -39,3 +39,5 @@ use the editor.
 - Never display a successful withdrawal request until a verified payout service actually accepts it; local balances cannot authorize payments.
 - Server catalogue prices and session rewards live in the pure economy module; wallet BOC submissions are stored locally as provisional purchases, never as verified payout authorization.
 - All game routes share AppScreen and bottom navigation with no brand header or menu; DataSlabs owns the asset-backed video and reduced-motion still so presentation remains separate from game economy.
+- Telegram referrals use the isolated gemston_* tables, signed recent initData or verified private webhook updates, and immutable first-registration attribution; this prevents forged identities and invite rebinding.
+- Referral counts and reward balances come from server-only functions; only service-written verified withdrawal receipts qualify friends and create one reward per invitee, never browser flags or local balances.
